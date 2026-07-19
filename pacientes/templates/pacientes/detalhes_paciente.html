@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ paciente.nome_completo }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{{ paciente.nome_completo }}</h1>
+    <div class="page-actions">
+        {% if request.user.perfil == 'ADMIN' or request.user.perfil == 'RECEP' %}
+        <a href="{% url 'pacientes:editar' paciente.pk %}" class="btn btn-primary btn-sm">Editar</a>
+        <a href="{% url 'pacientes:excluir' paciente.pk %}" class="btn btn-outline-danger btn-sm">Excluir</a>
+        {% endif %}
+        <a href="{% url 'pacientes:lista' %}" class="btn btn-outline-secondary btn-sm">Voltar</a>
+    </div>
+</div>
+
+<table class="table tabela-detalhes mb-4">
+    <tbody>
+        <tr>
+            <th>CPF</th>
+            <td class="dado-mono">{{ paciente.cpf }}</td>
+        </tr>
+        <tr>
+            <th>Data de nascimento</th>
+            <td>{{ paciente.data_nascimento }}</td>
+        </tr>
+        <tr>
+            <th>Sexo</th>
+            <td>{{ paciente.get_sexo_display }}</td>
+        </tr>
+        <tr>
+            <th>Telefone</th>
+            <td>{{ paciente.telefone }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td>{{ paciente.email|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>Endereço</th>
+            <td>{{ paciente.endereco|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>Cadastrado em</th>
+            <td>{{ paciente.criado_em }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="page-title mb-3" style="font-size: 0.95rem;">Histórico de consultas</h2>
+
+<div class="table-wrapper">
+    <table class="table-clinico">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Médico</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr>
+                <td><a href="{% url 'consultas:detalhes' consulta.pk %}">{{ consulta.data }}</a></td>
+                <td class="dado-mono">{{ consulta.horario }}</td>
+                <td>{{ consulta.medico }}</td>
+                <td><span class="status-dot status-dot--{{ consulta.status|lower }}">{{ consulta.get_status_display}}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-empty">Nenhuma consulta registrada para este paciente.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

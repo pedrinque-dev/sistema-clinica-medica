@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Pacientes{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Pacientes</h1>
+    <div class="page-actions">
+        {% if request.user.perfil == 'ADMIN' or request.user.perfil == 'RECEP' %}
+        <a href="{% url 'pacientes:cadastrar' %}" class="btn btn-primary btn-sm">Novo paciente</a>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" class="search-form">
+    <input type="text" name="q" class="form-control" placeholder="Buscar por nome ou CPF..." value="{{ termo_busca }}">
+    <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+    {% if termo_busca %}
+    <a href="{% url 'pacientes:lista' %}" class="btn btn-outline-secondary">Limpar</a>
+    {% endif %}
+</form>
+
+<div class="table-wrapper">
+    <table class="table-clinico">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Sexo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td><a href="{% url 'pacientes:detalhes' paciente.pk %}">{{ paciente.nome_completo }}</a></td>
+                <td class="dado-mono">{{ paciente.cpf }}</td>
+                <td>{{ paciente.telefone }}</td>
+                <td>{{ paciente.get_sexo_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-empty">
+                    {% if termo_busca %}
+                    Nenhum paciente encontrado para "{{ termo_busca }}".
+                    {% else %}
+                    Nenhum paciente cadastrado.
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'partials/pagination.html' with page_obj=pacientes %}
+{% endblock %}
