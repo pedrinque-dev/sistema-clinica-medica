@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ medico.nome_completo }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{{ medico.nome_completo }}</h1>
+    <div class="page-actions">
+        {% if request.user.perfil == 'ADMIN' %}
+        <a href="{% url 'medicos:editar' medico.pk %}" class="btn btn-primary btn-sm">Editar</a>
+        <a href="{% url 'medicos:excluir' medico.pk %}" class="btn btn-outline-danger btn-sm">Excluir</a>
+        {% endif %}
+        <a href="{% url 'medicos:lista' %}" class="btn btn-outline-secondary btn-sm">Voltar</a>
+    </div>
+</div>
+
+<table class="table tabela-detalhes">
+    <tbody>
+        <tr>
+            <th>CRM</th>
+            <td class="dado-mono">{{ medico.crm }}</td>
+        </tr>
+        <tr>
+            <th>Especialidade</th>
+            <td>{{ medico.especialidade }}</td>
+        </tr>
+        <tr>
+            <th>Telefone</th>
+            <td>{{ medico.telefone|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td>{{ medico.email|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>Cadastrado em</th>
+            <td>{{ medico.criado_em }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
