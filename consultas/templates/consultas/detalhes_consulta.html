@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Consulta{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Consulta de {{ consulta.paciente }}</h1>
+    <div class="page-actions">
+        {% if request.user.perfil == 'ADMIN' or request.user.perfil == 'RECEP' %}
+            <a href="{% url 'consultas:editar' consulta.pk %}" class="btn btn-primary btn-sm">Editar</a>
+            <a href="{% url 'consultas:excluir' consulta.pk %}" class="btn btn-outline-danger btn-sm">Excluir</a>
+        {% endif %}
+        <a href="{% url 'consultas:lista' %}" class="btn btn-outline-secondary btn-sm">Voltar</a>
+    </div>
+</div>
+
+<table class="table tabela-detalhes">
+    <tbody>
+        <tr>
+            <th>Paciente</th>
+            <td>{{ consulta.paciente }}</td>
+        </tr>
+        <tr>
+            <th>Médico</th>
+            <td>{{ consulta.medico }}</td>
+        </tr>
+        <tr>
+            <th>Data</th>
+            <td>{{ consulta.data }}</td>
+        </tr>
+        <tr>
+            <th>Horário</th>
+            <td class="dado-mono">{{ consulta.horario }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><span class="status-dot status-dot--{{ consulta.status|lower }}">{{ consulta.get_status_display}}</span></td>
+        </tr>
+        <tr>
+            <th>Observações</th>
+            <td>{{ consulta.observacoes|default:"—"|linebreaks }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% if request.user.perfil == 'ADMIN' or request.user.perfil == 'MEDICO' %}
+    <div class="page-header" style="border-bottom: none; margin-top: 1.5rem;">
+        <h2 class="page-title" style="font-size: 0.95rem;">Prontuário</h2>
+        <div class="page-actions">
+            <a href="{% url 'consultas:prontuario' consulta.pk %}" class="btn btn-outline-secondary btn-sm">
+                {% if consulta.prontuario %}Ver / editar{% else %}Preencher{% endif %}
+            </a>
+        </div>
+    </div>
+
+    {% if consulta.prontuario %}
+        <table class="table tabela-detalhes">
+            <tbody>
+                <tr>
+                    <th>Queixa principal</th>
+                    <td>{{ consulta.prontuario.queixa_principal|default:"—"|linebreaks }}</td>
+                </tr>
+                <tr>
+                    <th>Diagnóstico</th>
+                    <td>{{ consulta.prontuario.diagnostico|default:"—"|linebreaks }}</td>
+                </tr>
+                <tr>
+                    <th>Prescrição</th>
+                    <td>{{ consulta.prontuario.prescricao|default:"—"|linebreaks }}</td>
+                </tr>
+                <tr>
+                    <th>Observações</th>
+                    <td>{{ consulta.prontuario.observacoes|default:"—"|linebreaks }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted">Nenhum prontuário preenchido para esta consulta.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

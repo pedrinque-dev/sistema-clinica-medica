@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Consulta{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Excluir consulta</h1>
+</div>
+
+<div class="alert alert-warning">
+    Tem certeza que deseja excluir a consulta de <strong>{{ consulta.paciente }}</strong>
+    em {{ consulta.data }} às {{ consulta.horario }}?
+    Essa ação não pode ser desfeita.
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+    <a href="{% url 'consultas:detalhes' consulta.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

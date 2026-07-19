@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Consultas</h1>
+    <div class="page-actions">
+        <a href="{% url 'consultas:calendario' %}" class="btn btn-outline-secondary btn-sm">Ver calendário</a>
+        {% if request.user.perfil == 'ADMIN' or request.user.perfil == 'RECEP' %}
+        <a href="{% url 'consultas:cadastrar' %}" class="btn btn-primary btn-sm">Nova consulta</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table class="table-clinico">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr>
+                <td><a href="{% url 'consultas:detalhes' consulta.pk %}">{{ consulta.data }}</a></td>
+                <td class="dado-mono">{{ consulta.horario }}</td>
+                <td>{{ consulta.paciente }}</td>
+                <td>{{ consulta.medico }}</td>
+                <td><span class="status-dot status-dot--{{ consulta.status|lower }}">{{ consulta.get_status_display}}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-empty">Nenhuma consulta agendada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'partials/pagination.html' with page_obj=consultas %}
+{% endblock %}
