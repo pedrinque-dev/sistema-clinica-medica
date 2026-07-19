@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content_public %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-title">Sistema Clínico</h1>
+
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Usuário ou senha inválidos.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Usuário</label>
+                <input type="text" name="username" class="form-control" id="id_username" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Senha</label>
+                <input type="password" name="password" class="form-control" id="id_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

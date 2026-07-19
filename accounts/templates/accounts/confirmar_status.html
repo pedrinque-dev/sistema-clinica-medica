@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Alterar Status{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h4 mb-3">
+        {% if usuario.is_active %}Desativar{% else %}Reativar{% endif %} Funcionário
+    </h1>
+
+    <div class="alert {% if usuario.is_active %}alert-warning{% else %}alert-info{% endif %}">
+        {% if usuario.is_active %}
+        Tem certeza que deseja desativar <strong>{{ usuario.username }}</strong>?
+        Ele não conseguirá mais fazer login no sistema, mas seus dados serão mantidos.
+        {% else %}
+        Tem certeza que deseja reativar <strong>{{ usuario.username }}</strong>?
+        Ele voltará a conseguir fazer login no sistema.
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn {% if usuario.is_active %}btn-danger{% else %}btn-success{% endif %}">
+            {% if usuario.is_active %}Sim, desativar{% else %}Sim, reativar{% endif %}
+        </button>
+        <a href="{% url 'accounts:lista_usuarios' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

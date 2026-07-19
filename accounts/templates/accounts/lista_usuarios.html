@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Funcionários{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Funcionários</h1>
+    <div class="page-actions">
+        <a href="{% url 'accounts:cadastrar_usuario' %}" class="btn btn-primary btn-sm">Novo funcionário</a>
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table class="table-clinico">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Médico vinculado</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td><a href="{% url 'accounts:editar_usuario' usuario.pk %}">{{ usuario.username }}</a></td>
+                <td>{{ usuario.email|default:"—" }}</td>
+                <td>{{ usuario.get_perfil_display }}</td>
+                <td>{{ usuario.medico|default:"—" }}</td>
+                <td>
+                    <span class="status-dot status-dot--{% if usuario.is_active %}ativo{% else %}inativo{% endif %}">
+                        {% if usuario.is_active %}Ativo{% else %}Inativo{% endif %}
+                    </span>
+                </td>
+                <td>
+                    {% if usuario != request.user %}
+                    <a href="{% url 'accounts:alternar_status_usuario' usuario.pk %}"
+                        class="btn btn-sm btn-outline-secondary">
+                        {% if usuario.is_active %}Desativar{% else %}Reativar{% endif %}
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-empty">Nenhum funcionário cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'partials/pagination.html' with page_obj=usuarios %}
+{% endblock %}
